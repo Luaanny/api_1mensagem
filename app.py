@@ -2,20 +2,6 @@ from flask import Flask, request, jsonify
 
 app = Flask (__name__)
 
-mensagens = [
-    {
-    "id": 1,
-    "conteudo": "baesse vs vicente"
-    },
-     {
-    "id": 2,
-    "conteudo": "baesse vs vicente"
-    },
-     {
-    "id": 3,
-    "conteudo": "baesse vs vicente"
-    }
-]
 
 print(f'mensagens: {mensagens}')
 for message in mensagens:
