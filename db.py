@@ -1,13 +1,11 @@
-from sqlalchemy import create_engine, Column, String, Integer
-from sqlalchemy.orm import declative_base
+from flask_sqlalchemy import SQLAlchemy 
 
-db = create_engine("sqlalchemy://banco_mensagens.db")
-Session = sessionmaker(bind=db)
-Session = Session()
+db = SQLAlchemy()
 
-Modelo = declative_base()
+class Mensagens(db.Model):
+    __tablename__ = 'mensagens'
+    id = db.Column (db.Integer, primarykey=True, autoincrement=True)
+    conteudo = db.Column (db.String, nullable=False)
 
-#tabelas
-class mensagem(Modelo):
-    id = Column("id", Integer, primary_key= True)
-    conteudo = Column("conteudo", String)
+    def to_dict(self):
+        return {"id": self.id, "conteudo": self.conteudo}

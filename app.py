@@ -1,16 +1,26 @@
 from flask import Flask, request, jsonify
+from db import db, Mensagem
+from http import HTTPStatus
 
 app = Flask (__name__)
+app.config['SQLALCHMY_DATABASE_URI'] = 'sqlalchemy://banco_mensagens.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
+
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
 
 
-print(f'mensagens: {mensagens}')
-for message in mensagens:
-    print(message['id'])
 @app.route('/mensagens', methods=['POST'])
 def criar_mensagens():
-    nova_mensagem = request.get_json()
-    mensagens.append(nova_mensagem)
-    return jsonify({'mensagem': 'Mensagem criada'}), 201
+    data = request.get_json()
+    nova = Mensagem(conteudo=data.get('conteudo'))
+
+    db.session(nova)
+    db.session.commit()
+
+    return jsonify(nova .to_dict(), HTTPStatus.CREATED)
 
 @app.route("/mensagens", methods=["GET"])
 def ler_mensagens():
