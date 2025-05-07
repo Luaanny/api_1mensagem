@@ -3,7 +3,7 @@ from db import db, Mensagem
 from http import HTTPStatus
 
 app = Flask (__name__)
-app.config['SQLALCHMY_DATABASE_URI'] = 'sqlalchemy://banco_mensagens.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///project.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 
 db.init_app(app)
@@ -12,23 +12,28 @@ with app.app_context():
     db.create_all()
 
 
-@app.route('/mensagens', methods=['POST'])
+@app.route('/mensagens',  methods=['POST'])
 def criar_mensagens():
     data = request.get_json()
     nova = Mensagem(conteudo=data.get('conteudo'))
 
-    db.session(nova)
+    db.session.add(nova)
     db.session.commit()
 
-    return jsonify(nova .to_dict(), HTTPStatus.CREATED)
+    return jsonify(nova.to_dict()), HTTPStatus.CREATED
 
 @app.route("/mensagens", methods=["GET"])
 def ler_mensagens():
-    return {"mensagens": mensagens}
+    mensagens = Mensagem.query.all()
+    return jsonify([m.to_dict() for m in mensagens], HTTPStatus.OK)
 
 @app.route("/mensagens/<int:id>", methods=['PUT'])
 def update_mensagens(id):
     data = request.json
+    mensagem = Mensagem.query.all()
+    if mensagem:
+        mensagem.conteudo = data.get('conteudo', mensagem.conteudo)
+
     for message in mensagens:
         if message['id'] == id:
             message['conteudo'] = data.get('conteudo')
