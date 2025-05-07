@@ -28,35 +28,34 @@ def ler_mensagens():
     return jsonify([m.to_dict() for m in mensagens], HTTPStatus.OK)
 
 @app.route("/mensagens/<int:id>", methods=['PUT'])
-def update_mensagens(id):
-    data = request.json
-    mensagem = Mensagem.query.all()
+def update_mensagem(id):
+    data = request.get_json()
+    mensagem = Mensagem.query.get(id)
+
     if mensagem:
         mensagem.conteudo = data.get('conteudo', mensagem.conteudo)
-
-    for message in mensagens:
-        if message['id'] == id:
-            message['conteudo'] = data.get('conteudo')
-            return message
+        db.session.commit()
+        return jsonify(mensagem.to_dict()), HTTPStatus.OK
     
-    return jsonify({'erro': 'id não encontrado'}), 404
+    return jsonify({'erro': 'id não encontrado'}), HTTPStatus.NOT_FOUND
 
 @app.route("/mensagens/<int:id>", methods=['DELETE'])
 def delete_mensagens(id):
-    for message in mensagens:
-        if message['id'] == id:
-            mensagens.remove(message)
-            return message            
+    mensagem = Mensagem.query.get(id)
+    if mensagem:
+        db.session.delete(mensagem)
+        db.session.commit()
+        return jsonify(mensagem.to_dict()), HTTPStatus.OK        
 
-    return jsonify({'erro': 'id não encontrado'}), 404
+    return jsonify({'erro': 'id não encontrado'}), HTTPStatus.NOT_FOUND
 
 @app.route('/mensagens/<int:id>', methods=['GET'])
 def retornar_mensagem(id):
-    for message in mensagens:
-        if message['id'] == id:
-            return message
+    mensagem = Mensagem.query.get(id)
+    if mensagem:
+            return jsonify(mensagem.to_dict()), HTTPStatus.OK
     
-    return jsonify({'mensagem': 'o id não foi encontrado'}), 404
+    return jsonify({'mensagem': 'o id não foi encontrado'}), HTTPStatus.NOT_FOUND
 
 
     
