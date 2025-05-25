@@ -12,6 +12,10 @@ with app.app_context():
     db.create_all()
 
 
+@app.route('/')
+def index():
+    return 'hello world'
+
 @app.route('/mensagens',  methods=['POST'])
 def criar_mensagens():
     data = request.get_json()
@@ -25,7 +29,7 @@ def criar_mensagens():
 @app.route("/mensagens", methods=["GET"])
 def ler_mensagens():
     mensagens = Mensagem.query.all()
-    return jsonify([m.to_dict() for m in mensagens], HTTPStatus.OK)
+    return jsonify([m.to_dict() for m in mensagens])
 
 @app.route("/mensagens/<int:id>", methods=['PUT'])
 def update_mensagem(id):
