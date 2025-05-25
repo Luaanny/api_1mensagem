@@ -58,8 +58,6 @@ def retornar_mensagem(id):
     return jsonify({'mensagem': 'o id não foi encontrado'}), HTTPStatus.NOT_FOUND
 
 
-    
 
- 
 if __name__ == '__main__':
     app.run(debug=True)
